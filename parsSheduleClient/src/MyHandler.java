@@ -65,22 +65,10 @@ public class MyHandler extends DefaultHandler {
 
         if (IsMyGroup) {
             if (!name.isEmpty())
-                System.out.println(name);
-            switch (secondElement) {
-                case "Day":
-                    System.out.println("Stop : " + secondElement);
-                case "Lesson":
-                    if (!lessons.isEmpty())
-                        System.out.println(lessons);
-                case "Part":
-                    if (!podgroup.isEmpty())
-                        System.out.println(podgroup);
+                System.out.println(secondElement);
 
-                case "Auditorium":
-                    if (!numberauditorium.isEmpty() && !auditorium.isEmpty())
-                        System.out.println(numberauditorium + " " + auditorium);
 
-            }
+
         }
         auditorium = "";
         day = "";

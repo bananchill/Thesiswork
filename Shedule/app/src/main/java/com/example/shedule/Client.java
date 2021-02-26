@@ -1,20 +1,35 @@
+package com.example.shedule;
+
+import android.util.Log;
+
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
+
+import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
+import java.net.Socket;
 
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
-import java.io.*;
-import java.net.Socket;
 
 public class Client {
-    public static void main(String[] args) {
 
+    private final String LOG_TAG = "MyLog";
+    private final String FILENAME = "file";
+
+    public void ClientConnection() {
         try (Socket clientSocket = new Socket("176.117.134.51", 14882);
              BufferedWriter writer = new BufferedWriter(
                      new OutputStreamWriter(clientSocket.getOutputStream()));
              BufferedReader reader = new BufferedReader(
-                     new InputStreamReader(clientSocket.getInputStream()))) {                                                      System.out.println("Connected");
+                     new InputStreamReader(clientSocket.getInputStream()))) {
+            System.out.println("Connected");
 
 
             String request = "C:\\Users\\макс\\Desktop\\xml\\lessons.xml";
@@ -24,32 +39,27 @@ public class Client {
             writer.flush();
 
             String reading = reader.readLine();
-            if (reading.equals("Нет такого файла") ) {
-                return;
+
+            Log.d(LOG_TAG, reading);
+            if (reading.equals("Нет такого файла")) {
+
             }
-            File newFile = new File("C:\\Users\\макс\\Desktop\\xml\\lesson.xml");
+            File newFile = new File(FILENAME);
 
             if (!newFile.exists()) {
-                newFile.createNewFile();
+                MainActivity mainActivity = new MainActivity();
+                mainActivity.CheckMyShedule(newFile.toString(),reading);
             }
 
-
-            String read = null ;
-            BufferedWriter outputStream = new BufferedWriter(new FileWriter(newFile));;
-
-            outputStream.write(reading);
-            outputStream.flush();
-            outputStream.newLine();
-
-            DefaultHandler defaultHandler = new MyHandler();
+            DefaultHandler defaultHandler = new MyHandlerParsing();
             // Создание фабрики и образца парсера
             SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
             SAXParser saxParser = saxParserFactory.newSAXParser();
             saxParser.parse(newFile, defaultHandler);
 
-
         } catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
         }
+
     }
 }
