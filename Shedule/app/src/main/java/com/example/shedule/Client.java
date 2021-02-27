@@ -21,7 +21,7 @@ import javax.xml.parsers.SAXParserFactory;
 public class Client {
 
     private final String LOG_TAG = "MyLog";
-    private final String FILENAME = "file";
+    private final String FILENAME = "file.xml";
 
     public void ClientConnection() {
         try (Socket clientSocket = new Socket("176.117.134.51", 14882);

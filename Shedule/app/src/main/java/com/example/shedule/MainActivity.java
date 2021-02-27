@@ -29,7 +29,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private final String LOG_TAG = "MyLog";
-//    private final String FILENAME = "file";
+   // private final String FILENAME = "file.xml";
 
     private DrawerLayout drawer;
     private TextView txtViewLessons;
