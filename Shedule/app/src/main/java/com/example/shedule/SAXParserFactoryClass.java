@@ -24,8 +24,7 @@ public class SAXParserFactoryClass {
             // Создание ф+абрики и образца парсера
             SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
             SAXParser saxParser= saxParserFactory.newSAXParser();
-
-            saxParser.parse(inputStream, defaultHandler);
+            saxParser.parse(FILENAME, defaultHandler);
         } catch (ParserConfigurationException | SAXException |IOException   e) {
             e.printStackTrace();
         }
