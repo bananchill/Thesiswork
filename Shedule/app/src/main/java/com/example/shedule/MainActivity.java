@@ -29,7 +29,7 @@ import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private final String LOG_TAG = "MyLog";
-//    private final String FILENAME = "file";
+    private final String FILENAME = "file";
 
     private DrawerLayout drawer;
     private TextView txtViewLessons;
@@ -41,6 +41,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private String infConnectionServer = null;
 
+    private SAXParserFactoryClass saxParserFactoryClass = new SAXParserFactoryClass();
+
+    private static int countConnection = 0;
     // private static MessageException messageException = new MessageException();
 
     @Override
@@ -62,14 +65,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actionBarDrawerToggle.syncState(); //синхронизация управления
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-
-
     }
+
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        client.ClientConnection();
+
+        if (countConnection >= 1)
+            Log.d("MyLog", "Подключение произошло");
+        else{
+            countConnection++;
+            infConnectionServer = client.ClientConnection();
+            if (infConnectionServer != null){
+                CheckMyShedule(infConnectionServer);
+                saxParserFactoryClass.SaxParserFactoryVoid();
+            }
+            else Log.d("MyLog", "isEmpty");
+        }
+
         toolbar.setTitle(R.string.Shedule);
         getMenuInflater().inflate(R.menu.main, menu);
         return true;
@@ -96,9 +111,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    public void printLessons(ArrayList<GroupData> datagroup) {
+    public void printLessons(ArrayList<GroupData> dataArrayList) {
         StringBuilder builder = new StringBuilder();
-        for (GroupData groupData : datagroup) {
+        for (GroupData groupData : dataArrayList) {
+            Log.d("MyLog", groupData + "");
             builder.append(groupData.getGroupDayID()).append("\n").
                     append(groupData.getGroupLessonsID()).append("\n").
                     append(groupData.getGroupAuditorium()).append("\n").
@@ -107,9 +123,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                     append(groupData.getNameTeacher()).append("\n");
         }
         txtViewLessons.setText(builder.toString());
+        Log.d("Data :", builder.toString());
     }
 
-    public void CheckMyShedule(String FILENAME,String data) {
+    public void CheckMyShedule(String data) {
         try {
             // отрываем поток для записи
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
