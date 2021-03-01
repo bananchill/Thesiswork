@@ -20,24 +20,4 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <include layout="@layout/content_main" />
-
-    <EditText
-        android:id="@+id/textGroup"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_below="@+id/txtPars"
-        android:layout_alignParentStart="true"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentEnd="true"
-        android:layout_alignParentRight="true"
-        android:layout_marginStart="95dp"
-        android:layout_marginLeft="95dp"
-        android:layout_marginTop="266dp"
-        android:layout_marginEnd="106dp"
-        android:layout_marginRight="106dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="3703" />
-
 </RelativeLayout>

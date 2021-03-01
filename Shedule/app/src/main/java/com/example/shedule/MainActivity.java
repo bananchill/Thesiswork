@@ -21,11 +21,15 @@ import androidx.appcompat.widget.Toolbar;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private final String LOG_TAG = "MyLog";
@@ -36,12 +40,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private EditText inputGroup;
     private Toolbar toolbar;
 
-    private Client client = new Client();
-    private Object Exception;
-
     private String infConnectionServer = null;
-
-    private SAXParserFactoryClass saxParserFactoryClass = new SAXParserFactoryClass();
 
     private static int countConnection = 0;
     // private static MessageException messageException = new MessageException();
@@ -65,25 +64,31 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         actionBarDrawerToggle.syncState(); //синхронизация управления
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
-    }
+        if (countConnection >= 1) {
+            Log.d("MyLog", "Подключение произошло");
+            countConnection++;
+        } else {
+            countConnection++;
+            infConnectionServer = Client.ClientConnection();
+            if (infConnectionServer != null) {
+                CheckMyShedule(infConnectionServer);
+            } else Log.d("MyLog", "isEmpty");
+        }
+        try {
+            FileInputStream fin = openFileInput(FILENAME);
+            SAXParserFactoryClass.SaxParserFactoryVoid(fin);
 
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        printLessons(MyHandlerParsing.dataGroup);
+
+    }
 
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-
-        if (countConnection >= 1)
-            Log.d("MyLog", "Подключение произошло");
-        else{
-            countConnection++;
-            infConnectionServer = client.ClientConnection();
-            if (infConnectionServer != null){
-                CheckMyShedule(infConnectionServer);
-                saxParserFactoryClass.SaxParserFactoryVoid();
-            }
-            else Log.d("MyLog", "isEmpty");
-        }
 
         toolbar.setTitle(R.string.Shedule);
         getMenuInflater().inflate(R.menu.main, menu);
@@ -97,8 +102,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         if (id == R.id.nav_home) {
             toolbar.setTitle(R.string.Shedule);
             Toast.makeText(this, "fff", Toast.LENGTH_SHORT).show();
-            client.ClientConnection();
-
+            printLessons(MyHandlerParsing.dataGroup);
         } else if (id == R.id.nav_gallery) {
             toolbar.setTitle(R.string.SheduleGroup);
             //readFile();
@@ -111,10 +115,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    public void printLessons(ArrayList<GroupData> dataArrayList) {
+    public void printLessons(List<GroupData> dataArrayList) {
         StringBuilder builder = new StringBuilder();
         for (GroupData groupData : dataArrayList) {
-            Log.d("MyLog", groupData + "");
             builder.append(groupData.getGroupDayID()).append("\n").
                     append(groupData.getGroupLessonsID()).append("\n").
                     append(groupData.getGroupAuditorium()).append("\n").
@@ -145,7 +148,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 //        try {
 //            // открываем поток для чтения
 //            BufferedReader br = new BufferedReader(new InputStreamReader(
-//                    openFileInput()));
+//                    openFileInput(FILENAME)));
 //            String str = "";
 //            // читаем содержимое
 //            while ((str = br.readLine()) != null) {

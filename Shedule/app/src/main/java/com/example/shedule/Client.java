@@ -1,5 +1,6 @@
 package com.example.shedule;
 
+import android.renderscript.ScriptGroup;
 import android.util.Log;
 
 import java.io.BufferedReader;
@@ -8,33 +9,45 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.net.Socket;
+import java.util.concurrent.Future;
 
 public class Client {
 
-    private String reading;
+    private static String reading;
 
-    public String ClientConnection() {
+    public static String ClientConnection() {
         Thread thread = new Thread(() -> {
-            try (Socket clientSocket = new Socket("176.117.134.51", 14882);
-                 BufferedWriter writer = new BufferedWriter(
-                         new OutputStreamWriter(clientSocket.getOutputStream()));
-                 BufferedReader reader = new BufferedReader(
-                         new InputStreamReader(clientSocket.getInputStream()))) {
-                System.out.println("Connected");
+            try (Socket clientSocket = new Socket("176.117.134.51", 14882)) {
+                clientSocket.setSoTimeout(1000);
+                try(
+                BufferedWriter writer = new BufferedWriter(
+                        new OutputStreamWriter(clientSocket.getOutputStream()));
+                BufferedReader reader = new BufferedReader(
+                        new InputStreamReader(clientSocket.getInputStream())))
+
+                {
+                    System.out.println("Connected");
 
 
-                String request = "C:\\Users\\макс\\Desktop\\xml\\lessons.xml";
+                    String request = "C:\\Users\\макс\\Desktop\\xml\\lessons.xml";
 
-                writer.write(request);
-                writer.newLine();
-                writer.flush();
+                    writer.write(request);
+                    writer.newLine();
+                    writer.flush();
 
-                reading = reader.readLine();
-                Log.d("MyLog", reading);
-                if (reading.isEmpty() || reading.equals("Нет такого файла")) {
-                    return;
+                    reading = reader.readLine();
+                    Log.d("MyLog", reading);
+                    if (reading.isEmpty() || reading.equals("Нет такого файла")) {
+                        return;
+                    }
+                } catch(
+                IOException e)
+
+                {
+                    e.printStackTrace();
                 }
-            } catch (IOException e) {
+            } catch(IOException e) {
+                Thread.interrupted();
                 e.printStackTrace();
             }
         });
@@ -45,8 +58,6 @@ public class Client {
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
-
-
         return reading;
     }
 }

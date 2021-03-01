@@ -2,7 +2,6 @@ package com.example.shedule.orlov.Module;
 
 public class GroupData {
 
-
     private String groupDayID;
     private String groupLessonsID;
     private String groupPodgr;
@@ -46,15 +45,4 @@ public class GroupData {
         return groupAuditorium;
     }
 
-    @Override
-    public String toString() {
-        return "GroupData{" +
-                ", groupDayID='" + groupDayID + '\'' +
-                ", groupLessonsID='" + groupLessonsID + '\'' +
-                ", groupPodgr='" + groupPodgr + '\'' +
-                ", nameLesson='" + nameLesson + '\'' +
-                ", nameTeacher='" + nameTeacher + '\'' +
-                ", groupAuditorium='" + groupAuditorium + '\'' +
-                '}';
-    }
 }

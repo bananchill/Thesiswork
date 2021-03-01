@@ -14,13 +14,12 @@ public class Server {
             System.out.println("Server started");
 
             while (true) {
-
                 Socket socket = server.accept();
                 BufferedWriter writer = new BufferedWriter(
                         new OutputStreamWriter(socket.getOutputStream()));
                 BufferedReader reader = new BufferedReader(
                         new InputStreamReader(socket.getInputStream()));
-                new Thread(() -> {
+                Thread thread = new Thread(() -> {
                     try {
                         File file = new File(reader.readLine());
 
@@ -51,7 +50,9 @@ public class Server {
 
                     } catch (IOException e) {
                     }
-                }).start();
+                });
+                thread.start();
+                thread.interrupt();
 
             }
 
