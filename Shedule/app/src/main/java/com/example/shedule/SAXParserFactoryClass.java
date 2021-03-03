@@ -22,7 +22,6 @@ public class SAXParserFactoryClass {
     private final String FILENAME = "file";
 
     public static void SaxParserFactoryVoid(FileInputStream fin) {
-        Thread thread = new Thread(() -> {
             try {
                 DefaultHandler defaultHandler = new MyHandlerParsing();
                 // Создание фабрики и образца парсера
@@ -32,9 +31,6 @@ public class SAXParserFactoryClass {
             } catch (ParserConfigurationException | SAXException | IOException e) {
                 e.printStackTrace();
             }
-        });
-        thread.start();
-        thread.interrupt();
     }
 
 

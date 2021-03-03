@@ -5,7 +5,9 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.Spinner;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
@@ -15,6 +17,7 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.shedule.orlov.Module.NameGroup;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.BufferedReader;
@@ -23,6 +26,7 @@ import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.List;
 
 public class SheduleGroupActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private final String LOG_TAG = "MyLog";
@@ -31,13 +35,14 @@ public class SheduleGroupActivity extends AppCompatActivity implements Navigatio
     private TextView txtViewLessons;
 
     private EditText inputGroup;
+    private Spinner spinnerGroup;
 
     private DrawerLayout drawer;
     private Toolbar toolbar;
 
     private Client client = new Client();
 
-
+    private char[] arrayNameOfGroup = null;
     // private static MessageException messageException = new MessageException();
 
     @Override
@@ -50,6 +55,11 @@ public class SheduleGroupActivity extends AppCompatActivity implements Navigatio
         setSupportActionBar(toolbar);
 
         drawer = findViewById(R.id.drawer_layout);
+        spinnerGroup = findViewById(R.id.spinner);
+
+        ArrayAdapter<NameGroup> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, MyHandlerParsing.nameGroup);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spinnerGroup.setAdapter(adapter);
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this); // присваиваем всем элементам шторки слева id для передачи в метод onNavidation

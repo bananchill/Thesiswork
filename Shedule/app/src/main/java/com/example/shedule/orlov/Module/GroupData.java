@@ -5,20 +5,20 @@ public class GroupData {
     private String groupDayID;
     private String groupLessonsID;
     private String groupPodgr;
-    private String nameLesson ;
+    private String nameLesson;
     private String nameTeacher;
     private String groupAuditorium;
 
 
 
-    public GroupData( String groupDayID, String groupLessonsID, String groupPodgr, String nameLesson, String nameTeacher, String groupAuditorium) {
-
+    public GroupData(String groupDayID, String groupLessonsID, String groupPodgr, String nameLesson, String nameTeacher, String groupAuditorium) {
         this.groupDayID = groupDayID;
         this.groupLessonsID = groupLessonsID;
         this.groupPodgr = groupPodgr;
         this.nameLesson = nameLesson;
         this.nameTeacher = nameTeacher;
         this.groupAuditorium = groupAuditorium;
+
     }
 
     public String getGroupDayID() {

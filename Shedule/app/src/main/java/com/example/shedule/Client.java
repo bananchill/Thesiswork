@@ -14,22 +14,22 @@ import java.util.concurrent.Future;
 public class Client {
 
     private static String reading;
+    private static Socket clientSocket = null;
 
     public static String ClientConnection() {
         Thread thread = new Thread(() -> {
-            try (Socket clientSocket = new Socket("176.117.134.51", 14882)) {
+            try  {
+                 clientSocket = new Socket("176.117.134.51", 14882);
                 clientSocket.setSoTimeout(1000);
-                try(
-                BufferedWriter writer = new BufferedWriter(
-                        new OutputStreamWriter(clientSocket.getOutputStream()));
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(clientSocket.getInputStream())))
-
-                {
+                try (
+                        BufferedWriter writer = new BufferedWriter(
+                                new OutputStreamWriter(clientSocket.getOutputStream()));
+                        BufferedReader reader = new BufferedReader(
+                                new InputStreamReader(clientSocket.getInputStream()))) {
                     System.out.println("Connected");
 
 
-                    String request = "C:\\Users\\макс\\Desktop\\xml\\lessons.xml";
+                    String request = "C:\\Users\\maksm\\OneDrive\\Desktop\\xml\\lessons.xml";
 
                     writer.write(request);
                     writer.newLine();
@@ -40,13 +40,12 @@ public class Client {
                     if (reading.isEmpty() || reading.equals("Нет такого файла")) {
                         return;
                     }
-                } catch(
-                IOException e)
 
-                {
+
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
-            } catch(IOException e) {
+            } catch (IOException e) {
                 Thread.interrupted();
                 e.printStackTrace();
             }

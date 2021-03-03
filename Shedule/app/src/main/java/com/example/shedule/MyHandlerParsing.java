@@ -1,6 +1,7 @@
 package com.example.shedule;
 
 import com.example.shedule.orlov.Module.GroupData;
+import com.example.shedule.orlov.Module.NameGroup;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -12,6 +13,8 @@ import java.util.List;
 public class MyHandlerParsing extends DefaultHandler {
 
     public static List<GroupData> dataGroup = new ArrayList<>();
+    public static List<NameGroup> nameGroup = new ArrayList<>();
+
 
     private String groupDayID;
     private String groupLessonsID;
@@ -19,9 +22,10 @@ public class MyHandlerParsing extends DefaultHandler {
     private String nameLesson;
     private String nameTeacher;
     private String groupAuditorium;
+    private String whereAuditorium;
 
 
-    public String mygroup = "3703";
+    public String mygroup = "10-02к";
     private boolean IsMyGroup = false;
 
     @Override
@@ -46,17 +50,16 @@ public class MyHandlerParsing extends DefaultHandler {
                     case "Day":
                         groupDayID = attributes.getValue(0);
                     case "Lesson":
-                        nameLesson = attributes.getValue(0);
+                        groupLessonsID = attributes.getValue(0);
+                       // System.out.println(nameLesson);
                     case "Part":
                         groupPodgr = attributes.getValue(1);
                     case "Auditorium":
                         groupAuditorium = attributes.getValue(1);
                 }
             }
-        }
-        else
-
-
+        } else if (element.equals("Group"))
+            nameGroup.add(new NameGroup(attributes.getValue(0)));
 
     }
 
@@ -70,9 +73,11 @@ public class MyHandlerParsing extends DefaultHandler {
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (IsMyGroup) {
-            if (!nameLesson.isEmpty())
+            if (!nameLesson.isEmpty()) {
+                System.out.println(nameLesson);
                 dataGroup.add(new GroupData(groupDayID,
-                        groupLessonsID, groupPodgr, nameLesson, nameTeacher, groupAuditorium));
+                        groupLessonsID, groupPodgr, nameLesson, nameTeacher, groupAuditorium ));
+            }
         }
         groupDayID = "";
         groupLessonsID = "";
@@ -80,6 +85,7 @@ public class MyHandlerParsing extends DefaultHandler {
         nameLesson = "";
         nameTeacher = "";
         groupAuditorium = "";
+        whereAuditorium = "";
     }
 
 

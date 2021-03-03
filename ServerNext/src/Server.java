@@ -4,12 +4,19 @@ import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.text.DateFormatSymbols;
+import java.util.Calendar;
 import java.util.Scanner;
 
 
 public class Server {
     public static void main(String args[]) {
-        try (ServerSocket server = new ServerSocket(14882)) { // создаем переменную с сокетом и закидываем в try, потому что он реализует интерфейс Closable
+        Calendar date = Calendar.getInstance();
+        int dayOfWeek = date.get(Calendar.DAY_OF_WEEK);
+        String weekday = new DateFormatSymbols().getShortWeekdays()[dayOfWeek];
+
+        System.out.println(dayOfWeek-1);
+        try (ServerSocket server = new ServerSocket(14883)) { // создаем переменную с сокетом и закидываем в try, потому что он реализует интерфейс Closable
 
             System.out.println("Server started");
 
@@ -34,6 +41,7 @@ public class Server {
                             writer.newLine();
                             writer.flush();
                         }
+
 
                         System.out.println("File exists :" + file);
 
