@@ -12,8 +12,8 @@ import java.util.List;
 
 public class MyHandlerParsing extends DefaultHandler {
 
-    public static List<GroupData> dataGroup = new ArrayList<>();
-    public static List<NameGroup> nameGroup = new ArrayList<>();
+    public static ArrayList<GroupData> dataGroup = new ArrayList<>();
+    public static ArrayList<NameGroup> nameGroup = new ArrayList<>();
 
 
     private String groupDayID;
@@ -24,8 +24,13 @@ public class MyHandlerParsing extends DefaultHandler {
     private String groupAuditorium;
     private String whereAuditorium;
 
+    private String lessoms = "";
+    int i = 0;
 
-    public String mygroup = "10-02к";
+    private boolean checkAuditorium = false;
+    private boolean checkTeacher = false;
+
+    public String mygroup = "3703";
     private boolean IsMyGroup = false;
 
     @Override
@@ -45,18 +50,23 @@ public class MyHandlerParsing extends DefaultHandler {
                 } else
                     IsMyGroup = false;
             }
-            if (IsMyGroup) {
+            if (IsMyGroup || i < 6) {
                 switch (element) {
                     case "Day":
                         groupDayID = attributes.getValue(0);
                     case "Lesson":
                         groupLessonsID = attributes.getValue(0);
-                       // System.out.println(nameLesson);
+                        // System.out.println(nameLesson);
                     case "Part":
                         groupPodgr = attributes.getValue(1);
                     case "Auditorium":
                         groupAuditorium = attributes.getValue(1);
+                    case "Name":
+                    case "Teacher":
+                        checkTeacher = true;
+
                 }
+                i++;
             }
         } else if (element.equals("Group"))
             nameGroup.add(new NameGroup(attributes.getValue(0)));
@@ -66,26 +76,38 @@ public class MyHandlerParsing extends DefaultHandler {
     @Override
     public void characters(char[] ch, int start, int length) throws SAXException {
         if (IsMyGroup) {
-            nameLesson = new String(ch, start, length);
+            if (checkTeacher) {
+                nameLesson += new String(ch, start, length);
+
+            }
         }
     }
+
 
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (IsMyGroup) {
-            if (!nameLesson.isEmpty()) {
+            if (!groupAuditorium.isEmpty()) {
+                lessoms = groupAuditorium;
+                groupAuditorium = "";
+            } else {
                 System.out.println(nameLesson);
                 dataGroup.add(new GroupData(groupDayID,
-                        groupLessonsID, groupPodgr, nameLesson, nameTeacher, groupAuditorium ));
+                        groupLessonsID, groupPodgr, nameLesson, nameTeacher, groupAuditorium));
+                lessoms = "";
+                nameTeacher = "";
+                checkAuditorium = false;
+                groupDayID = "";
+                groupLessonsID = "";
+                groupPodgr = "";
+                nameLesson = "";
+                whereAuditorium = "";
+                checkTeacher = false;
             }
+
+
+            //  System.out.println(nameLesson);
         }
-        groupDayID = "";
-        groupLessonsID = "";
-        groupPodgr = "";
-        nameLesson = "";
-        nameTeacher = "";
-        groupAuditorium = "";
-        whereAuditorium = "";
     }
 
 

@@ -29,14 +29,14 @@ public class Client {
                     System.out.println("Connected");
 
 
-                    String request = "C:\\Users\\maksm\\OneDrive\\Desktop\\xml\\lessons.xml";
+                    String request = "C:\\Users\\макс\\Desktop\\xml\\lessons.xml";
 
                     writer.write(request);
                     writer.newLine();
                     writer.flush();
 
                     reading = reader.readLine();
-                    Log.d("MyLog", reading);
+
                     if (reading.isEmpty() || reading.equals("Нет такого файла")) {
                         return;
                     }

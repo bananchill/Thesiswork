@@ -49,7 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar toolbar;
 
     private String infConnectionServer = null;
-   // private String infConnectionServer = null;
+    // private String infConnectionServer = null;
 
     private static int countConnection = 0;
     // private static MessageException messageException = new MessageException();
@@ -86,7 +86,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 countConnection++;
             } else {
                 countConnection++;
-                CheckMyShedule("l");
                 infConnectionServer = Client.ClientConnection();
 
                 if (infConnectionServer != null) {
@@ -136,45 +135,62 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     String dayOfWeek = String.valueOf(date.get(Calendar.DAY_OF_WEEK) - 1);
     StringBuffer builder = new StringBuffer();
 
-    public void printLessons(List<GroupData> dataArrayList) {
+    public void printLessons(ArrayList<GroupData> dataArrayList) {
         Log.d("Data data :", dayOfWeek);
-        String weekday = null;
+        boolean lsot = false;
 
         for (GroupData groupData : dataArrayList) {
-            //System.out.println(builder.append(groupData.getNameLesson()).append("\n"));
-            if (groupData.getGroupDayID().equals(dayOfWeek)) {
 
-                //System.out.println(builder.append(groupData.getGroupLessonsID()));
+            // System.out.println(groupData.getNameLesson());
+            System.out.println("aaaaa" + groupData.getGroupDayID());
+
+            if (dayOfWeek.equals(groupData.getGroupDayID()))
+                lsot = true;
+            else lsot = false;
+
+            if (lsot) {
                 switch (groupData.getGroupLessonsID()) {
                     case "1":
-                        builder.append(groupData.getNameLesson()).append("\n").
+                        System.out.println("fgfggf" + groupData.getNameLesson());
+                        builder.append(groupData.getNameLesson()).
                                 append(groupData.getNameTeacher()).append("\n");
-                        txtViewLessons.setText(builder.toString());
-                        builder = new StringBuffer();
+                        txtViewLessons.setText(builder + "");
+                        break;
+
                     case "2":
-                        builder.append(groupData.getNameTeacher()).
-                                append(groupData.getNameLesson()).append("\n");
+                        System.out.println("fgfggf" + groupData.getNameLesson());
+                        builder.append(groupData.getNameLesson()).append("\n").append(groupData.getNameTeacher()).append("\n").
+                                append(groupData.getNameTeacher()).append("\n");
                         txtViewLessons2.setText(builder.toString());
-                        builder = new StringBuffer();
+                        break;
+
                     case "3":
-                        builder.append(groupData.getNameLesson()).append("\n").
+                        System.out.println("fgfggf" + groupData.getNameLesson());
+                        builder.append(groupData.getNameLesson()).append("\n").append(groupData.getNameTeacher()).append("\n").
                                 append(groupData.getNameTeacher()).append("\n");
                         txtViewLessons3.setText(builder.toString());
-                        builder = new StringBuffer();
+                        break;
+
                     case "4":
+                        System.out.println("fgfggf" + groupData.getNameLesson());
                         builder.append(groupData.getNameLesson()).append("\n").
                                 append(groupData.getNameTeacher()).append("\n");
                         txtViewLessons4.setText(builder.toString());
-                        builder = new StringBuffer();
 
+                        break;
                     case "5":
+                        System.out.println("fgfggf" + groupData.getNameLesson());
                         builder.append(groupData.getNameLesson()).append("\n").
                                 append(groupData.getNameTeacher()).append("\n");
                         txtViewLessons5.setText(builder.toString());
-                        builder = null;
+
+                        lsot = false;
                 }
             }
+
+            builder = new StringBuffer();
         }
+        builder = null;
         txtViewDay.setText(new DateFormatSymbols().getShortWeekdays()[Integer.parseInt(dayOfWeek) + 1]);
     }
 
@@ -184,322 +200,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
                     openFileOutput(FILENAME, MODE_PRIVATE)));
             // пишем данные
-            bw.write("<?xml version=\"1.0\" encoding=\"UTF-8\"?>\n" +
-                    "<YhZav>\n" +
-                    "\t<Year>2021</Year>\n" +
-                    "\t<Week>22</Week>\n" +
-                    "\t<Numerator>True</Numerator>\n" +
-                    "\t<Monday>25.01.2021</Monday>\n" +
-                    "\t<Work>С 25/01/21 по 06/02/21</Work>\n" +
-                    "\t<ListGroup>\n" +
-                    "\t\t<Group Name=\"10-02к\">\n" +
-                    "\t\t\t<Timetable>\n" +
-                    "\t\t\t\t<Day N=\"1\">\n" +
-                    "\t\t\t\t\t<Lesson N=\"1\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Экон.организации</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Попова Вера Михайловна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/306\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"2\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>ДОУ</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Елисеева Ольга Николаевна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"1/206\" Building=\"1 корпус (Балтийская, 35)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"3\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"2\">\n" +
-                    "\t\t\t\t\t\t\t<Name>ИТ в ПД</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Король Юлия Александровна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"1/304*\" Building=\"1 корпус (Балтийская, 35)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t\t<Part N=\"2\" Podgr=\"1\">\n" +
-                    "\t\t\t\t\t\t\t<Name>ИТ в ПД</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Смычкова Екатерина Викторовна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"1/304\" Building=\"1 корпус (Балтийская, 35)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"4\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Псих.соц-прав.деят.</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Тишкевич Светлана Борисовна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/301\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t</Day>\n" +
-                    "\t\t\t\t<Day N=\"2\">\n" +
-                    "\t\t\t\t\t<Lesson N=\"1\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Псих.соц-прав.деят.</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Тишкевич Светлана Борисовна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/301\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"2\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Сем.право</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Гребенкина Ольга Юрьевна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/207\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"3\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Гражд.процесс</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Гребенкина Ольга Юрьевна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/207\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"4\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Сем.право</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Гребенкина Ольга Юрьевна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/207\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t</Day>\n" +
-                    "\t\t\t\t<Day N=\"3\">\n" +
-                    "\t\t\t\t\t<Lesson N=\"2\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Физ.культура</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Жмырко Ирина Владимировна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"1/С.зал№1\" Building=\"1 корпус (Балтийская, 35)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"3\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"2\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Ин.яз.</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Шиленкова Татьяна Михайловна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/202\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t\t<Part N=\"2\" Podgr=\"1\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Ин.яз.</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Перн Ольга Евгеньевна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/302\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"4\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Прав.соц.обесп.</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Краскина Светлана Анатольевна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/211\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"5\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Гражд.право</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Краскина Светлана Анатольевна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/211\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t</Day>\n" +
-                    "\t\t\t\t<Day N=\"4\">\n" +
-                    "\t\t\t\t\t<Lesson N=\"1\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Сем.право</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Гребенкина Ольга Юрьевна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/207\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"2\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>БЖ</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Покудина Ирина Викторовна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"1/206\" Building=\"1 корпус (Балтийская, 35)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"3\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Статистика</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Ступак Наталья Алексеевна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"1/208\" Building=\"1 корпус (Балтийская, 35)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"4\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"1\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Информатика</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Лебедева Елена Николаевна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"1/304*\" Building=\"1 корпус (Балтийская, 35)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t\t<Part N=\"2\" Podgr=\"2\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Информатика</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Пяткова Елена Игоревна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"1/304\" Building=\"1 корпус (Балтийская, 35)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t</Day>\n" +
-                    "\t\t\t\t<Day N=\"5\">\n" +
-                    "\t\t\t\t\t<Lesson N=\"1\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Труд.право</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Батова Ольга Владимировна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/104\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"2\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Труд.право</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Батова Ольга Владимировна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/104\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"3\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Труд.право</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Батова Ольга Владимировна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/104\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t</Day>\n" +
-                    "\t\t\t\t<Day N=\"8\">\n" +
-                    "\t\t\t\t\t<Lesson N=\"1\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Экон.организации</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Попова Вера Михайловна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/206\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"2\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Псих.соц-прав.деят.</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Тишкевич Светлана Борисовна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/301\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"3\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"1\">\n" +
-                    "\t\t\t\t\t\t\t<Name>ИТ в ПД</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Смычкова Екатерина Викторовна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"1/304\" Building=\"1 корпус (Балтийская, 35)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t\t<Part N=\"2\" Podgr=\"2\">\n" +
-                    "\t\t\t\t\t\t\t<Name>ИТ в ПД</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Король Юлия Александровна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"1/304*\" Building=\"1 корпус (Балтийская, 35)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"4\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Менедж.</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Чернянская Ирина Владимировна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/101\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"5\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Псих.соц-прав.деят.</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Тишкевич Светлана Борисовна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/301\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t</Day>\n" +
-                    "\t\t\t\t<Day N=\"9\">\n" +
-                    "\t\t\t\t\t<Lesson N=\"2\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Гражд.процесс</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Гребенкина Ольга Юрьевна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/207\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"3\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>ДОУ</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Елисеева Ольга Николаевна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"1/225\" Building=\"1 корпус (Балтийская, 35)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"4\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Псих.соц-прав.деят.</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Тишкевич Светлана Борисовна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/301\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t</Day>\n" +
-                    "\t\t\t\t<Day N=\"10\">\n" +
-                    "\t\t\t\t\t<Lesson N=\"1\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Прав.соц.обесп.</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Краскина Светлана Анатольевна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/211\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"2\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Физ.культура</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Жмырко Ирина Владимировна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"1/С.зал№1\" Building=\"1 корпус (Балтийская, 35)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"3\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"2\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Ин.яз.</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Шиленкова Татьяна Михайловна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/202\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t\t<Part N=\"2\" Podgr=\"1\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Ин.яз.</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Перн Ольга Евгеньевна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/302\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t</Day>\n" +
-                    "\t\t\t\t<Day N=\"11\">\n" +
-                    "\t\t\t\t\t<Lesson N=\"1\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Прав.соц.обесп.</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Краскина Светлана Анатольевна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/211\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"2\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>БЖ</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Покудина Ирина Викторовна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"1/206\" Building=\"1 корпус (Балтийская, 35)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"3\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Менедж.</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Чернянская Ирина Владимировна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"1/208\" Building=\"1 корпус (Балтийская, 35)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"4\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"2\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Информатика</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Пяткова Елена Игоревна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"1/304\" Building=\"1 корпус (Балтийская, 35)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t\t<Part N=\"2\" Podgr=\"1\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Информатика</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Лебедева Елена Николаевна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"1/304*\" Building=\"1 корпус (Балтийская, 35)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t</Day>\n" +
-                    "\t\t\t\t<Day N=\"12\">\n" +
-                    "\t\t\t\t\t<Lesson N=\"1\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Гражд.право</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Краскина Светлана Анатольевна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"4/211\" Building=\"4 корпус (Швецова, 22)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t\t<Lesson N=\"2\">\n" +
-                    "\t\t\t\t\t\t<Part N=\"1\" Podgr=\"0\">\n" +
-                    "\t\t\t\t\t\t\t<Name>Статистика</Name>\n" +
-                    "\t\t\t\t\t\t\t<Teacher>Ступак Наталья Алексеевна</Teacher>\n" +
-                    "\t\t\t\t\t\t\t<Auditorium Number=\"1/225\" Building=\"1 корпус (Балтийская, 35)\"/>\n" +
-                    "\t\t\t\t\t\t</Part>\n" +
-                    "\t\t\t\t\t</Lesson>\n" +
-                    "\t\t\t\t</Day>\n" +
-                    "\t\t\t</Timetable>\n" +
-                    "\t\t</Group>" +
-                    "\t</ListGroup>\n" +
-                    "</YhZav>");
+            bw.write(data);
             // закрываем поток
             bw.close();
             Log.d(LOG_TAG, "Файл записан");
