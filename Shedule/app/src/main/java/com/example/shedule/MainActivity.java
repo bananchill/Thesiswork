@@ -49,6 +49,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Toolbar toolbar;
 
     private String infConnectionServer = null;
+   // private String infConnectionServer = null;
 
     private static int countConnection = 0;
     // private static MessageException messageException = new MessageException();
