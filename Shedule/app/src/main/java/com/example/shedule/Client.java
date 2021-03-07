@@ -18,9 +18,9 @@ public class Client {
 
     public static String ClientConnection() {
         Thread thread = new Thread(() -> {
-            try  {
-                 clientSocket = new Socket("176.117.134.51", 14882);
-                clientSocket.setSoTimeout(1000);
+            try {
+                clientSocket = new Socket("176.117.134.51", 14882);
+                clientSocket.setSoTimeout(500);
                 try (
                         BufferedWriter writer = new BufferedWriter(
                                 new OutputStreamWriter(clientSocket.getOutputStream()));
@@ -45,7 +45,7 @@ public class Client {
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
-            } catch (IOException e) {
+            } catch (Exception e) {
                 Thread.interrupted();
                 e.printStackTrace();
             }

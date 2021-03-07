@@ -23,15 +23,21 @@ public class MyHandlerParsing extends DefaultHandler {
     private String nameTeacher;
     private String groupAuditorium;
     private String whereAuditorium;
+    private String Name;
 
-    private String lessoms = "";
+    private String checkAuditorium = "";
+
     int i = 0;
 
-    private boolean checkAuditorium = false;
+
     private boolean checkTeacher = false;
 
-    public String mygroup = "3703";
+    public String mygroup;
     private boolean IsMyGroup = false;
+
+    public MyHandlerParsing(String mygroup) {
+        this.mygroup = mygroup;
+    }
 
     @Override
     public void startDocument() throws SAXException {
@@ -44,7 +50,6 @@ public class MyHandlerParsing extends DefaultHandler {
         if (!mygroup.equals("")) {
             if (element.equals("Group")) {
                 if (attributes.getValue(0).equals(mygroup)) {
-                    System.out.println(attributes.getValue(0));
                     nameLesson = attributes.getValue(0);
                     IsMyGroup = true;
                 } else
@@ -68,7 +73,8 @@ public class MyHandlerParsing extends DefaultHandler {
                 }
                 i++;
             }
-        } else if (element.equals("Group"))
+        }
+        if (element.equals("Group"))
             nameGroup.add(new NameGroup(attributes.getValue(0)));
 
     }
@@ -77,8 +83,7 @@ public class MyHandlerParsing extends DefaultHandler {
     public void characters(char[] ch, int start, int length) throws SAXException {
         if (IsMyGroup) {
             if (checkTeacher) {
-                nameLesson += new String(ch, start, length);
-
+                Name += new String(ch, start, length);
             }
         }
     }
@@ -88,15 +93,15 @@ public class MyHandlerParsing extends DefaultHandler {
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (IsMyGroup) {
             if (!groupAuditorium.isEmpty()) {
-                lessoms = groupAuditorium;
+                checkAuditorium = groupAuditorium;
+                nameLesson = Name;
                 groupAuditorium = "";
+                Name = "";
             } else {
-                System.out.println(nameLesson);
                 dataGroup.add(new GroupData(groupDayID,
-                        groupLessonsID, groupPodgr, nameLesson, nameTeacher, groupAuditorium));
-                lessoms = "";
+                        groupLessonsID, groupPodgr, nameLesson, Name, checkAuditorium));
+                checkAuditorium = "";
                 nameTeacher = "";
-                checkAuditorium = false;
                 groupDayID = "";
                 groupLessonsID = "";
                 groupPodgr = "";
@@ -104,8 +109,6 @@ public class MyHandlerParsing extends DefaultHandler {
                 whereAuditorium = "";
                 checkTeacher = false;
             }
-
-
             //  System.out.println(nameLesson);
         }
     }

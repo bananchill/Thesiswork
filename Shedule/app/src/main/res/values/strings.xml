@@ -10,7 +10,7 @@
     <string name="Shedule">Мое расписание</string>
     <string name="SheduleGroup">Расписание Групп</string>
     <string name="SheduleTeahcer">Расписание преподавателей</string>
-    <string name="title_activity_shedule_group">SheduleGroup</string>
+    <string name="title_activity_shedule_group">Расписание Групп</string>
     <string name="title_activity_shedule_group_content">SheduleGroupContent</string>
 
     <string name="menu_home">Home</string>

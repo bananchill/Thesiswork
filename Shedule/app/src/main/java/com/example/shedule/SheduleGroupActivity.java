@@ -5,8 +5,10 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
+import android.widget.SimpleCursorAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -20,19 +22,18 @@ import androidx.drawerlayout.widget.DrawerLayout;
 import com.example.shedule.orlov.Module.NameGroup;
 import com.google.android.material.navigation.NavigationView;
 
-import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.ArrayList;
 import java.util.List;
 
 public class SheduleGroupActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
     private final String LOG_TAG = "MyLog";
-    private final String FILENAME = "file";
+    private final String FILENAMEGroup = "filegroupp.xml";
 
-    private TextView txtViewLessons;
+    private TextView txtViewChoosing;
 
     private EditText inputGroup;
     private Spinner spinnerGroup;
@@ -42,7 +43,7 @@ public class SheduleGroupActivity extends AppCompatActivity implements Navigatio
 
     private Client client = new Client();
 
-    private char[] arrayNameOfGroup = null;
+    private ArrayList<String> arrayNameOfGroup = new ArrayList<>();
     // private static MessageException messageException = new MessageException();
 
     @Override
@@ -56,10 +57,8 @@ public class SheduleGroupActivity extends AppCompatActivity implements Navigatio
 
         drawer = findViewById(R.id.drawer_layout);
         spinnerGroup = findViewById(R.id.spinner);
+        txtViewChoosing = findViewById(R.id.textViewChoosingGroupMain);
 
-        ArrayAdapter<NameGroup> adapter = new ArrayAdapter<>(this, android.R.layout.simple_spinner_item, MyHandlerParsing.nameGroup);
-        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
-        spinnerGroup.setAdapter(adapter);
 
         NavigationView navigationView = findViewById(R.id.nav_view);
         navigationView.setNavigationItemSelectedListener(this); // присваиваем всем элементам шторки слева id для передачи в метод onNavidation
@@ -69,6 +68,7 @@ public class SheduleGroupActivity extends AppCompatActivity implements Navigatio
         actionBarDrawerToggle.syncState(); //синхронизация управления
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
+        completionSpinner(MyHandlerParsing.nameGroup);
     }
 
     @Override
@@ -89,7 +89,6 @@ public class SheduleGroupActivity extends AppCompatActivity implements Navigatio
 
         } else if (id == R.id.nav_gallery) {
             toolbar.setTitle(R.string.SheduleGroup);
-            readFile();
 
         } else if (id == R.id.nav_slideshow) {
             toolbar.setTitle(R.string.SheduleTeahcer);
@@ -98,38 +97,37 @@ public class SheduleGroupActivity extends AppCompatActivity implements Navigatio
         return true;
     }
 
-    private void CheckMyShedule() {
+
+    private void completionSpinner(List<NameGroup> nameGroups) {
+        for (NameGroup names : nameGroups) {
+            arrayNameOfGroup.add(String.valueOf(names.getNameGroup()));
+        }
+        ArrayAdapter<String> nameGroupArrayAdapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, arrayNameOfGroup);
+        nameGroupArrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
+        spinnerGroup.setAdapter(nameGroupArrayAdapter);
+
+    }
+
+    private void CheckMyGroup(String sad) {
         try {
-            // отрываем поток для записи
-            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
-                    openFileOutput(FILENAME, MODE_PRIVATE)));
-            // пишем данные
-            bw.write("Содержимое файла");
+            BufferedWriter bs = new BufferedWriter(new OutputStreamWriter(
+                    openFileOutput(FILENAMEGroup, MODE_PRIVATE)));
+
+            bs.write(sad);
             // закрываем поток
-            bw.close();
+            bs.close();
             Log.d(LOG_TAG, "Файл записан");
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
+        } catch (FileNotFoundException fileNotFoundException) {
+            fileNotFoundException.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    void readFile() {
-        try {
-            // открываем поток для чтения
-            BufferedReader br = new BufferedReader(new InputStreamReader(
-                    openFileInput(FILENAME)));
-            String str = "";
-            // читаем содержимое
-            while ((str = br.readLine()) != null) {
-                Log.d(LOG_TAG, str);
-            }
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+    public void buttonChoose(View view) {
+        String check = spinnerGroup.getSelectedItem().toString();
+        CheckMyGroup(check);
+        startActivity( new Intent(SheduleGroupActivity.this, MainActivity.class));
 
+    }
 }
