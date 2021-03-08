@@ -127,7 +127,8 @@ public class SheduleGroupActivity extends AppCompatActivity implements Navigatio
     public void buttonChoose(View view) {
         String check = spinnerGroup.getSelectedItem().toString();
         CheckMyGroup(check);
-        startActivity( new Intent(SheduleGroupActivity.this, MainActivity.class));
-
+        Intent intent = new Intent(SheduleGroupActivity.this, MainActivity.class);
+intent.putExtra("Refresh", 1);
+        startActivity(intent);
     }
 }

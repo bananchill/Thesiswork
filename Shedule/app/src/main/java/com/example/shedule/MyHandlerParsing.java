@@ -55,7 +55,7 @@ public class MyHandlerParsing extends DefaultHandler {
                 } else
                     IsMyGroup = false;
             }
-            if (IsMyGroup || i < 6) {
+            if (IsMyGroup) {
                 switch (element) {
                     case "Day":
                         groupDayID = attributes.getValue(0);

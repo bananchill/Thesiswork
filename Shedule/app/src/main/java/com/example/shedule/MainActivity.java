@@ -68,12 +68,26 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     private Calendar date = Calendar.getInstance();
     private String dayOfWeek = String.valueOf(date.get(Calendar.DAY_OF_WEEK) - 1);
     private StringBuffer builder = new StringBuffer();
-
+    int refresh = 0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.nav_activity_main);
+
+
+        try {
+            Bundle intent = getIntent().getExtras();
+             refresh = intent.getInt("Refresh");
+            if (refresh == 1) {
+                Intent i  = getIntent();
+                i.putExtra("Refresh",0);
+                finish();
+                startActivity(i);
+                ClearTextView();
+            }
+        } catch (Exception e) {
+        }
 
 
         toolbar = findViewById(R.id.toolbar);
@@ -130,11 +144,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // menu should be considered as top level destinations.
 
         printLessons(MyHandlerParsing.dataGroup, "");
-        if (txtViewLessons.getText().equals("")) {
-            Intent intent = getIntent();
-            finish();
-            startActivity(intent);
-        }
+
     }
 
     @Override
@@ -167,7 +177,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     public void printLessons(ArrayList<GroupData> dataArrayList, String next) {
-        ClearTextView();
+
         switch (next) {
             case "next":
                 if (!dayOfWeek.equals("7")) {
@@ -186,7 +196,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             default:
                 dayOfWeek = String.valueOf(date.get(Calendar.DAY_OF_WEEK) - 1);
         }
-
+        ClearTextView();
         for (GroupData groupData : dataArrayList) {
 
             if (!groupData.getGroupDayID().isEmpty())
@@ -317,6 +327,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         txtViewLessons3.setText("");
         txtViewLessons4.setText("");
         txtViewLessons5.setText("");
+        txtViewLessons6.setText("");
     }
 
 
