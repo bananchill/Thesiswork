@@ -19,17 +19,22 @@ import androidx.appcompat.widget.Toolbar;
 import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
+import com.example.shedule.orlov.Module.GroupData;
 import com.example.shedule.orlov.Module.NameGroup;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.BufferedWriter;
+import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.List;
 
-public class SheduleGroupActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+import static java.lang.Integer.parseInt;
+
+public class SheduleGroupActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, PrintLessons {
     private final String LOG_TAG = "MyLog";
     private final String FILENAMEGroup = "filegroupp.xml";
 
@@ -46,6 +51,27 @@ public class SheduleGroupActivity extends AppCompatActivity implements Navigatio
     private ArrayList<String> arrayNameOfGroup = new ArrayList<>();
     // private static MessageException messageException = new MessageException();
 
+
+    private TextView txtViewDay;
+    private TextView txtViewLessons;
+    private TextView txtViewLessons2;
+    private TextView txtViewLessons3;
+    private TextView txtViewLessons4;
+    private TextView txtViewLessons5;
+    private TextView txtViewLessons6;
+
+    private Calendar date = Calendar.getInstance();
+    private String dayOfWeek = String.valueOf(date.get(Calendar.DAY_OF_WEEK) - 1);
+    private StringBuffer builder = new StringBuffer();
+    int refresh = 0;
+
+    private FileInputStream fin = null;
+    private final String FILENAMEShedule = "fileshedule.xml";
+    private String checkingTheDayForANull = null;
+    boolean lsot = false;
+
+    int i = 1;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -58,6 +84,15 @@ public class SheduleGroupActivity extends AppCompatActivity implements Navigatio
         drawer = findViewById(R.id.drawer_layout);
         spinnerGroup = findViewById(R.id.spinner);
         txtViewChoosing = findViewById(R.id.textViewChoosingGroupMain);
+
+
+        txtViewDay = findViewById(R.id.textView4);
+        txtViewLessons = findViewById(R.id.textViewPara1);
+        txtViewLessons2 = findViewById(R.id.textViewPara2);
+        txtViewLessons3 = findViewById(R.id.textViewPara3);
+        txtViewLessons4 = findViewById(R.id.textViewPara4);
+        txtViewLessons5 = findViewById(R.id.textViewPara5);
+        txtViewLessons6 = findViewById(R.id.textViewPara6);
 
 
         NavigationView navigationView = findViewById(R.id.nav_view);
@@ -105,7 +140,16 @@ public class SheduleGroupActivity extends AppCompatActivity implements Navigatio
         ArrayAdapter<String> nameGroupArrayAdapter = new ArrayAdapter<>(this, R.layout.support_simple_spinner_dropdown_item, arrayNameOfGroup);
         nameGroupArrayAdapter.setDropDownViewResource(R.layout.support_simple_spinner_dropdown_item);
         spinnerGroup.setAdapter(nameGroupArrayAdapter);
-
+        String check = spinnerGroup.getSelectedItem().toString();
+        CheckMyGroup(check);
+        try {
+            ClearTextView();
+            fin = openFileInput(FILENAMEShedule);
+            SAXParserFactoryClass.SaxParserFactoryVoid(fin, check);
+            printLessonsShedule(MyHandlerParsing.dataGroup, "");
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
     }
 
     private void CheckMyGroup(String sad) {
@@ -125,10 +169,106 @@ public class SheduleGroupActivity extends AppCompatActivity implements Navigatio
     }
 
     public void buttonChoose(View view) {
-        String check = spinnerGroup.getSelectedItem().toString();
-        CheckMyGroup(check);
         Intent intent = new Intent(SheduleGroupActivity.this, MainActivity.class);
-intent.putExtra("Refresh", 1);
+        intent.putExtra("Refresh", 1);
         startActivity(intent);
+    }
+
+
+
+    @Override
+    public void printLessonsShedule(ArrayList<GroupData> dataArrayList, String next) {
+        switch (next) {
+            case "next":
+                if (!dayOfWeek.equals("7")) {
+                    dayOfWeek = String.valueOf(parseInt(dayOfWeek) + 1);
+                } else {
+                    dayOfWeek = String.valueOf(parseInt(dayOfWeek) - 7);
+                }
+                break;
+            case "thePast":
+                if (!dayOfWeek.equals("-1")) {
+                    dayOfWeek = String.valueOf(parseInt(dayOfWeek) - 1);
+                } else {
+                    dayOfWeek = String.valueOf(parseInt(dayOfWeek) + 7);
+                }
+                break;
+            default:
+                dayOfWeek = String.valueOf(date.get(Calendar.DAY_OF_WEEK) - 1);
+        }
+        ClearTextView();
+        for (GroupData groupData : dataArrayList) {
+
+            if (!groupData.getGroupDayID().isEmpty())
+                checkingTheDayForANull = groupData.getGroupDayID();
+
+            if (dayOfWeek.equals(checkingTheDayForANull)) {
+                lsot = true;
+            } else lsot = false;
+
+            if (lsot) {
+                System.out.println("zzzzz" + dayOfWeek);
+                switch (groupData.getGroupLessonsID()) {
+                    case "1":
+                        builder.append(groupData.getNameLesson()).replace(0, 10, "").append("\n").
+                                append(groupData.getNameTeacher()).replace(0, 10, "");
+                        txtViewLessons.setText(builder);
+                        break;
+                    case "2":
+                        builder.append(groupData.getNameLesson()).replace(0, 10, "").append("\n").
+                                append(groupData.getNameTeacher()).replace(0, 5, "");
+                        txtViewLessons2.setText(builder);
+                        break;
+                    case "3":
+
+                        builder.append(groupData.getNameLesson()).replace(0, 10, "").append("\n").
+                                append(groupData.getNameTeacher()).replace(0, 5, "");
+                        txtViewLessons3.setText(builder);
+                        break;
+                    case "4":
+
+                        builder.append(groupData.getNameLesson()).replace(0, 10, "").append("\n").
+                                append(groupData.getNameTeacher()).replace(0, 5, "");
+                        txtViewLessons4.setText(builder);
+                        break;
+                    case "5":
+
+                        builder.append(groupData.getNameLesson()).replace(0, 10, "").append("\n").
+                                append(groupData.getNameTeacher()).replace(0, 5, "");
+                        txtViewLessons5.setText(builder);
+                        break;
+                    case "6":
+                        builder.append(groupData.getNameLesson()).replace(0, 10, "").append("\n").
+                                append(groupData.getNameTeacher()).replace(0, 5, "");
+                        txtViewLessons6.setText(builder);
+                        break;
+                }
+                builder = new StringBuffer();
+            }
+            lsot = false;
+        }
+
+    }
+
+    private void ClearTextView() {
+        txtViewLessons.setText("");
+        txtViewLessons2.setText("");
+        txtViewLessons3.setText("");
+        txtViewLessons4.setText("");
+        txtViewLessons5.setText("");
+        txtViewLessons6.setText("");
+    }
+
+    public void buttonNextShedule(View view) {
+        printLessonsShedule(MyHandlerParsing.dataGroup, "next");
+    }
+
+    public void buttonTheBackShedule(View view) {
+        printLessonsShedule(MyHandlerParsing.dataGroup, "thePast");
+
+    }
+
+    public void buttonToday(View view) {
+        printLessonsShedule(MyHandlerParsing.dataGroup, "");
     }
 }

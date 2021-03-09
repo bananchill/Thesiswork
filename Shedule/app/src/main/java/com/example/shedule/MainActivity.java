@@ -35,20 +35,20 @@ import java.util.Scanner;
 
 import static java.lang.Integer.*;
 
-public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, PrintLessons {
     private final String LOG_TAG = "MyLog";
     private final String FILENAMEShedule = "fileshedule.xml";
     private final String FILENAMEGroup = "filegroupp.xml";
 
     private DrawerLayout drawer;
 
-    public TextView txtViewDay;
-    public TextView txtViewLessons;
-    public TextView txtViewLessons2;
-    public TextView txtViewLessons3;
-    public TextView txtViewLessons4;
-    public TextView txtViewLessons5;
-    public TextView txtViewLessons6;
+    private TextView txtViewDay;
+    private TextView txtViewLessons;
+    private TextView txtViewLessons2;
+    private TextView txtViewLessons3;
+    private TextView txtViewLessons4;
+    private TextView txtViewLessons5;
+    private TextView txtViewLessons6;
 
     public TextView editchoosingGroupmain;
 
@@ -78,10 +78,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
         try {
             Bundle intent = getIntent().getExtras();
-             refresh = intent.getInt("Refresh");
+            refresh = intent.getInt("Refresh");
             if (refresh == 1) {
-                Intent i  = getIntent();
-                i.putExtra("Refresh",0);
+                Intent i = getIntent();
+                i.putExtra("Refresh", 0);
                 finish();
                 startActivity(i);
                 ClearTextView();
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
 
-        printLessons(MyHandlerParsing.dataGroup, "");
+        printLessonsShedule(MyHandlerParsing.dataGroup, "");
 
     }
 
@@ -176,8 +176,9 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    public void printLessons(ArrayList<GroupData> dataArrayList, String next) {
 
+    @Override
+    public void printLessonsShedule(ArrayList<GroupData> dataArrayList, String next) {
         switch (next) {
             case "next":
                 if (!dayOfWeek.equals("7")) {
@@ -266,8 +267,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
                 txtViewDay.setText(new DateFormatSymbols().getShortWeekdays()[Integer.parseInt((dayOfWeek) + 1) - 6]);
 
         }
-
-
     }
 
 
@@ -310,15 +309,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     public void buttonTheBackShedule(View view) {
-        printLessons(MyHandlerParsing.dataGroup, "thePast");
+        printLessonsShedule(MyHandlerParsing.dataGroup, "thePast");
     }
 
     public void buttonNextShedule(View view) {
-        printLessons(MyHandlerParsing.dataGroup, "next");
+        printLessonsShedule(MyHandlerParsing.dataGroup, "next");
     }
 
     public void buttonToday(View view) {
-        printLessons(MyHandlerParsing.dataGroup, "");
+        printLessonsShedule(MyHandlerParsing.dataGroup, "");
     }
 
     private void ClearTextView() {
@@ -333,7 +332,6 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private void MethodSaxAndRead() {
         SAXParserFactoryClass.SaxParserFactoryVoid(fin, String.valueOf(editchoosingGroupmain.getText()));
-
         readFileSD();
     }
 

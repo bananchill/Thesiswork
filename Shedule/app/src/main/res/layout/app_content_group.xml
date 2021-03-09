@@ -16,6 +16,37 @@
         android:onClick="buttonChoose"
         android:text="Выбрать свою группу" />
 
+    <Button
+        android:id="@+id/buttonToday"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buttonChoose"
+        android:layout_centerHorizontal="true"
+        android:onClick="buttonToday"
+        android:text="Сегодя" />
+
+    <Button
+        android:id="@+id/buttonTheBackShedule"
+        android:layout_width="116dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buttonChoose"
+        android:layout_alignLeft="@id/wall"
+        android:layout_alignParentRight="@+id/buttonToday"
+        android:layout_marginLeft="10dp"
+        android:onClick="buttonTheBackShedule"
+        android:text="Вчера" />
+
+    <Button
+        android:id="@+id/buttonNextShedule"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/buttonChoose"
+        android:layout_alignRight="@id/wall"
+        android:layout_alignParentLeft="@+id/buttonToday"
+        android:layout_marginRight="10dp"
+        android:onClick="buttonNextShedule"
+        android:text="Завтра" />
+
     <com.google.android.material.appbar.AppBarLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -30,6 +61,11 @@
 
 
     </com.google.android.material.appbar.AppBarLayout>
+
+    <include
+        android:id="@+id/wall"
+        layout="@layout/group_content" />
+
 
     <Spinner
         android:id="@+id/spinner"
