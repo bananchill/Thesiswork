@@ -21,22 +21,21 @@ public class SAXParserFactoryClass {
     private final String LOG_TAG = "MyLog";
     private final String FILENAME = "file";
 
-    public static void SaxParserFactoryVoid(FileInputStream fin, String nameGroup) {
-    Thread thread = new Thread(() -> {
-            try {
-                DefaultHandler defaultHandler = new MyHandlerParsing(nameGroup);
-                // Создание фабрики и образца парсера
-                SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
-                SAXParser saxParser = saxParserFactory.newSAXParser();
-                saxParser.parse(fin, defaultHandler);
-            } catch (SAXException | IOException e) {
-                e.printStackTrace();
-            } catch (ParserConfigurationException e) {
-                e.printStackTrace();
-            }
-        });
-
+    public static void SaxParserFactoryVoid(FileInputStream fin, String nameGroup, String checkChoose) {
         try {
+            Thread thread = new Thread(() -> {
+                try {
+                    DefaultHandler defaultHandler = new MyHandlerParsing(nameGroup, checkChoose);
+                    // Создание фабрики и образца парсера
+                    SAXParserFactory saxParserFactory = SAXParserFactory.newInstance();
+                    SAXParser saxParser = saxParserFactory.newSAXParser();
+                    saxParser.parse(fin, defaultHandler);
+                } catch (SAXException | IOException e) {
+                    e.printStackTrace();
+                } catch (ParserConfigurationException e) {
+                    e.printStackTrace();
+                }
+            });
             thread.start();
             thread.join();
             thread.interrupt();

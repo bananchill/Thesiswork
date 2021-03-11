@@ -12,6 +12,6 @@ import static java.lang.Integer.parseInt;
 
 public interface PrintLessons {
 
-     void printLessonsShedule(ArrayList<GroupData> dataArrayList, String next);
+     void printLessonsShedule(String next);
 
 }

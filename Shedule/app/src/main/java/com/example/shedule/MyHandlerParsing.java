@@ -2,17 +2,18 @@ package com.example.shedule;
 
 import com.example.shedule.orlov.Module.GroupData;
 import com.example.shedule.orlov.Module.NameGroup;
+import com.example.shedule.orlov.Module.ReplacementData;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class MyHandlerParsing extends DefaultHandler {
 
     public static ArrayList<GroupData> dataGroup = new ArrayList<>();
+    public static ArrayList<ReplacementData> replacementData = new ArrayList<>();
     public static ArrayList<NameGroup> nameGroup = new ArrayList<>();
 
 
@@ -33,10 +34,12 @@ public class MyHandlerParsing extends DefaultHandler {
     private boolean checkTeacher = false;
 
     public String mygroup;
+    public String checkChoose;
     private boolean IsMyGroup = false;
 
-    public MyHandlerParsing(String mygroup) {
+    public MyHandlerParsing(String mygroup, String checkChoose) {
         this.mygroup = mygroup;
+        this.checkChoose = checkChoose;
     }
 
     @Override
@@ -83,7 +86,9 @@ public class MyHandlerParsing extends DefaultHandler {
     public void characters(char[] ch, int start, int length) throws SAXException {
         if (IsMyGroup) {
             if (checkTeacher) {
+
                 Name += new String(ch, start, length);
+                System.out.println(Name + " Day");
             }
         }
     }
@@ -98,8 +103,12 @@ public class MyHandlerParsing extends DefaultHandler {
                 groupAuditorium = "";
                 Name = "";
             } else {
-                dataGroup.add(new GroupData(groupDayID,
-                        groupLessonsID, groupPodgr, nameLesson, Name, checkAuditorium));
+                if (checkChoose.equals("replacement"))
+                    replacementData.add(new ReplacementData(groupDayID,
+                            groupLessonsID, groupPodgr, nameLesson, Name, checkAuditorium));
+                else
+                    dataGroup.add(new GroupData(groupDayID,
+                            groupLessonsID, groupPodgr, nameLesson, Name, checkAuditorium));
                 checkAuditorium = "";
                 nameTeacher = "";
                 groupDayID = "";
@@ -118,4 +127,5 @@ public class MyHandlerParsing extends DefaultHandler {
     public void endDocument() throws SAXException {
         System.out.println("End Parsing ...");
     }
+
 }

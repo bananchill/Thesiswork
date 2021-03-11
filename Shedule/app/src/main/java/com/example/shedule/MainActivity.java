@@ -18,11 +18,11 @@ import androidx.core.view.GravityCompat;
 import androidx.drawerlayout.widget.DrawerLayout;
 
 import com.example.shedule.orlov.Module.GroupData;
+import com.example.shedule.orlov.Module.ReplacementData;
 import com.google.android.material.navigation.NavigationView;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -31,13 +31,15 @@ import java.io.OutputStreamWriter;
 import java.text.DateFormatSymbols;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Scanner;
 
-import static java.lang.Integer.*;
+import static java.lang.Integer.parseInt;
 
 public class MainActivity extends AppCompatActivity implements NavigationView.OnNavigationItemSelectedListener, PrintLessons {
     private final String LOG_TAG = "MyLog";
     private final String FILENAMEShedule = "fileshedule.xml";
+    private final String FILENAMEReplacementShedule = "filePrplacementShedule.xml";
     private final String FILENAMEGroup = "filegroupp.xml";
 
     private DrawerLayout drawer;
@@ -56,39 +58,30 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
     private Toolbar toolbar;
 
-    private String infConnectionServer = null;
+    private String radingShedul = null;
+    private String readReplacementScheduleClient = null;
     private String checkingTheDayForANull = null;
+    private String checkingTheDayForANullReplacement = null;
 
     boolean lsot = false;
 
     private FileInputStream fin = null;
-    private File fileshedule = new File(FILENAMEShedule);
-    private File fileGroup = new File(FILENAMEGroup);
 
     private Calendar date = Calendar.getInstance();
+    private Date timeOfDay = new Date();
+
     private String dayOfWeek = String.valueOf(date.get(Calendar.DAY_OF_WEEK) - 1);
     private StringBuffer builder = new StringBuffer();
+
+
     int refresh = 0;
+    int HourOfDay = parseInt(String.valueOf(timeOfDay.getHours()));
+    int minutesOfHour = parseInt(String.valueOf(timeOfDay.getMinutes()));
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.nav_activity_main);
-
-
-        try {
-            Bundle intent = getIntent().getExtras();
-            refresh = intent.getInt("Refresh");
-            if (refresh == 1) {
-                Intent i = getIntent();
-                i.putExtra("Refresh", 0);
-                finish();
-                startActivity(i);
-                ClearTextView();
-            }
-        } catch (Exception e) {
-        }
-
 
         toolbar = findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
@@ -97,30 +90,44 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         editchoosingGroupmain = findViewById(R.id.textViewChoosingGroupMain);
 
         try {
+            System.out.println("TimeOfDay " + HourOfDay + minutesOfHour);
 
-
-            System.out.println(date.get(Calendar.DAY_OF_WEEK));
+            //System.out.println(date.get(Calendar.DAY_OF_WEEK));
             if (String.valueOf(date.get(Calendar.DAY_OF_WEEK)).equals("7")) {
-                infConnectionServer = Client.ClientConnection();
-                CheckMyShedule(infConnectionServer);
+                radingShedul = Client.ClientConnection("C:\\Users\\maksm\\Desktop\\xml\\3.xml");
+                CheckMyShedule(radingShedul);
                 fin = openFileInput(FILENAMEShedule);
-                MethodSaxAndRead();
+                MethodSaxAndRead(fin, "shedule");
+                fin.close();
             }
             if (!readFileSD()) {
+                radingShedul = Client.ClientConnection("C:\\Users\\maksm\\Desktop\\xml\\3.xml");
                 startActivity(new Intent(this, SheduleGroupActivity.class));
-                infConnectionServer = Client.ClientConnection();
-                if (infConnectionServer == null) {
+                if (radingShedul == null) {
                     Log.d("MyLog", "isEmpty");
                 }
-                CheckMyShedule(infConnectionServer);
+                CheckMyShedule(radingShedul);
                 fin = openFileInput(FILENAMEShedule);
-                MethodSaxAndRead();
+                MethodSaxAndRead(fin, "shedule");
+                fin.close();
             } else {
                 fin = openFileInput(FILENAMEShedule);
-                MethodSaxAndRead();
+                MethodSaxAndRead(fin, "shedule");
+                fin.close();
+            }
+            if (HourOfDay >= 14 && minutesOfHour == 0 || minutesOfHour == 6 && HourOfDay <= 23) {
+                readReplacementScheduleClient = Client.ClientConnection("C:\\Users\\maksm\\Desktop\\xml\\dop.xml");
+                CheckMyReplacementShedule(readReplacementScheduleClient);
+            } else {
+                fin = openFileInput(FILENAMEReplacementShedule);
+                MethodSaxAndRead(fin, "replacement");
+                fin.close();
             }
 
+
         } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
 
@@ -143,9 +150,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
         // Passing each menu ID as a set of Ids because each
         // menu should be considered as top level destinations.
 
-        printLessonsShedule(MyHandlerParsing.dataGroup, "");
+        printLessonsShedule("");
 
     }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -176,9 +184,8 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-
     @Override
-    public void printLessonsShedule(ArrayList<GroupData> dataArrayList, String next) {
+    public void printLessonsShedule(String next) {
         switch (next) {
             case "next":
                 if (!dayOfWeek.equals("7")) {
@@ -197,57 +204,58 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             default:
                 dayOfWeek = String.valueOf(date.get(Calendar.DAY_OF_WEEK) - 1);
         }
+
         ClearTextView();
-        for (GroupData groupData : dataArrayList) {
-
-            if (!groupData.getGroupDayID().isEmpty())
+        for (GroupData groupData : MyHandlerParsing.dataGroup) {
+            if (!groupData.getGroupDayID().isEmpty()) {
                 checkingTheDayForANull = groupData.getGroupDayID();
+            }
 
-            if (dayOfWeek.equals(checkingTheDayForANull)) {
-                lsot = true;
-            } else lsot = false;
-
+            lsot = dayOfWeek.equals(checkingTheDayForANull);
             if (lsot) {
-                System.out.println("zzzzz" + dayOfWeek);
-                switch (groupData.getGroupLessonsID()) {
-                    case "1":
-                        builder.append(groupData.getNameLesson()).replace(0, 10, "").append("\n").
-                                append(groupData.getNameTeacher()).replace(0, 10, "");
-                        txtViewLessons.setText(builder);
-                        break;
-                    case "2":
-                        builder.append(groupData.getNameLesson()).replace(0, 10, "").append("\n").
-                                append(groupData.getNameTeacher()).replace(0, 5, "");
-                        txtViewLessons2.setText(builder);
-                        break;
-                    case "3":
+                System.out.println("getNameLesson " + groupData.getNameLesson());
+               // for (ReplacementData replacementData : MyHandlerParsing.replacementData)
+                    switch (groupData.getGroupLessonsID()) {
+                        case "1":
+                            //if()
+                            builder.append(groupData.getNameLesson()).replace(0, 10, "").append("\n").
+                                    append(groupData.getNameTeacher()).replace(0, 10, "");
 
-                        builder.append(groupData.getNameLesson()).replace(0, 10, "").append("\n").
-                                append(groupData.getNameTeacher()).replace(0, 5, "");
-                        txtViewLessons3.setText(builder);
-                        break;
-                    case "4":
+                            txtViewLessons.setText(builder);
+                            break;
+                        case "2":
+                            builder.append(groupData.getNameLesson()).replace(0, 10, "").append("\n").
+                                    append(groupData.getNameTeacher()).replace(0, 8, "");
+                            txtViewLessons2.setText(builder);
+                            break;
+                        case "3":
+                            builder.append(groupData.getNameLesson()).replace(0, 10, "").append("\n").
+                                    append(groupData.getNameTeacher()).replace(0, 10, "");
+                            txtViewLessons3.setText(builder);
+                            break;
+                        case "4":
+                            builder.append(groupData.getNameLesson()).replace(0, 10, "").append("\n").
+                                    append(groupData.getNameTeacher()).replace(0, 10, "");
+                            txtViewLessons4.setText(builder);
+                            break;
+                        case "5":
+                            builder.append(groupData.getNameLesson()).replace(0, 10, "").append("\n").
+                                    append(groupData.getNameTeacher()).replace(0, 10, "");
+                            txtViewLessons5.setText(builder);
+                            break;
+                        case "6":
+                            builder.append(groupData.getNameLesson()).replace(0, 10, "").append("\n").
+                                    append(groupData.getNameTeacher()).replace(0, 10, "");
+                            txtViewLessons6.setText(builder);
+                            break;
+                    }
 
-                        builder.append(groupData.getNameLesson()).replace(0, 10, "").append("\n").
-                                append(groupData.getNameTeacher()).replace(0, 5, "");
-                        txtViewLessons4.setText(builder);
-                        break;
-                    case "5":
-
-                        builder.append(groupData.getNameLesson()).replace(0, 10, "").append("\n").
-                                append(groupData.getNameTeacher()).replace(0, 5, "");
-                        txtViewLessons5.setText(builder);
-                        break;
-                    case "6":
-                        builder.append(groupData.getNameLesson()).replace(0, 10, "").append("\n").
-                                append(groupData.getNameTeacher()).replace(0, 5, "");
-                        txtViewLessons6.setText(builder);
-                        break;
-                }
                 builder = new StringBuffer();
             }
+
             lsot = false;
         }
+
 
         //System.out.println(new DateFormatSymbols().getShortWeekdays()[Integer.parseInt(dayOfWeek) + 1]);
         switch (Integer.parseInt(dayOfWeek)) {
@@ -258,21 +266,37 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
             case 4:
             case 5:
             case 6:
-                txtViewDay.setText(new DateFormatSymbols().getShortWeekdays()[Integer.parseInt(dayOfWeek) + 1]);
+                txtViewDay.setText(new DateFormatSymbols().getWeekdays()[Integer.parseInt(dayOfWeek) + 1]);
                 break;
             case 7:
-                txtViewDay.setText(new DateFormatSymbols().getShortWeekdays()[Integer.parseInt(dayOfWeek) - 7]);
+                txtViewDay.setText(new DateFormatSymbols().getWeekdays()[Integer.parseInt(dayOfWeek) - 6]);
                 break;
             default:
-                txtViewDay.setText(new DateFormatSymbols().getShortWeekdays()[Integer.parseInt((dayOfWeek) + 1) - 6]);
+                txtViewDay.setText(new DateFormatSymbols().getWeekdays()[Integer.parseInt((dayOfWeek) + 1) - 6]);
 
         }
     }
 
 
-    private void CheckMyShedule(String data) {
+    private void CheckMyReplacementShedule(String readReplacementSchedule) {
         try {
 
+            BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
+                    openFileOutput(FILENAMEReplacementShedule, MODE_PRIVATE)));
+
+            bw.write(readReplacementSchedule);
+            // закрываем поток
+            bw.close();
+            Log.d(LOG_TAG, "Файл записан");
+        } catch (FileNotFoundException fileNotFoundException) {
+            fileNotFoundException.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void CheckMyShedule(String data) {
+        try {
             BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(
                     openFileOutput(FILENAMEShedule, MODE_PRIVATE)));
 
@@ -309,15 +333,15 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
 
 
     public void buttonTheBackShedule(View view) {
-        printLessonsShedule(MyHandlerParsing.dataGroup, "thePast");
+        printLessonsShedule("thePast");
     }
 
     public void buttonNextShedule(View view) {
-        printLessonsShedule(MyHandlerParsing.dataGroup, "next");
+        printLessonsShedule("next");
     }
 
     public void buttonToday(View view) {
-        printLessonsShedule(MyHandlerParsing.dataGroup, "");
+        printLessonsShedule("");
     }
 
     private void ClearTextView() {
@@ -330,9 +354,10 @@ public class MainActivity extends AppCompatActivity implements NavigationView.On
     }
 
 
-    private void MethodSaxAndRead() {
-        SAXParserFactoryClass.SaxParserFactoryVoid(fin, String.valueOf(editchoosingGroupmain.getText()));
+    private void MethodSaxAndRead(FileInputStream fileInputStream, String checkChoosing) {
+        SAXParserFactoryClass.SaxParserFactoryVoid(fileInputStream, String.valueOf(editchoosingGroupmain.getText()), checkChoosing);
         readFileSD();
     }
+
 
 }

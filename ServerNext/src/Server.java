@@ -1,75 +1,81 @@
-
-import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
-
 import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.text.DateFormatSymbols;
-import java.util.Calendar;
+import java.net.*;
+import java.util.Arrays;
 import java.util.Scanner;
 
 
 public class Server {
+    private static String reading;
     public static void main(String args[]) {
-        Calendar date = Calendar.getInstance();
-        int dayOfWeek = date.get(Calendar.DAY_OF_WEEK);
-        String weekday = new DateFormatSymbols().getShortWeekdays()[dayOfWeek];
 
-        System.out.println(dayOfWeek-1);
-        try (ServerSocket server = new ServerSocket(14883)) { // создаем переменную с сокетом и закидываем в try, потому что он реализует интерфейс Closable
+        try (ServerSocket server = new ServerSocket(3405)) {
 
             System.out.println("Server started");
 
             while (true) {
+                System.out.println("start While");
                 Socket socket = server.accept();
-                BufferedWriter writer = new BufferedWriter(
-                        new OutputStreamWriter(socket.getOutputStream()));
-                BufferedReader reader = new BufferedReader(
-                        new InputStreamReader(socket.getInputStream()));
-                Thread thread = new Thread(() -> {
-                    try {
-                        File file = new File(reader.readLine());
+                   new Thread(() -> {
+                        try {
+                            BufferedWriter writer = new BufferedWriter(
+                                    new OutputStreamWriter(socket.getOutputStream()));
+                            BufferedReader reader = new BufferedReader(
+                                    new InputStreamReader(socket.getInputStream()));
 
-                        if (!file.exists()) {
-                            System.out.println("File not exists: " + file);
-                            String response = "File not exists: " + file;
-                            System.out.println("error " + response);
+                            System.out.println(socket.getPort()+ "- port client");
+                            System.out.println(socket.getLocalAddress() + "- IP");
+                            System.out.println(socket.getLocalPort()+ "- socketChannel");
 
-                            String lak = "Нет такого файла";
+                            reading = reader.readLine();
+                            File file = new File(reading);
 
-                            writer.write(lak);
+                            if (!file.exists()) {
+                                System.out.println("the file was not found: " + file);
+                                String response = "File not exists: " + file;
+                                System.out.println("error " + response);
+
+                                String lak = "Нет такого файла";
+
+                                writer.write(lak);
+                                writer.newLine();
+                                writer.flush();
+                                
+                                return ;
+                            }
+
+
+                            System.out.println("File exists :" + file);
+
+                            Scanner scanner = new Scanner(new FileInputStream(file));
+                            do {
+                                writer.write(scanner.nextLine());
+                            }
+                            while (scanner.hasNextLine());
                             writer.newLine();
+
                             writer.flush();
+                            scanner.close();
+
+                            System.out.println("end scanning file  :" + file.getName());
+                        } catch (IOException e) {
+                            e.printStackTrace();
                         }
 
+                    }).start();
+                System.out.println("Server Closed");
+                }
 
-                        System.out.println("File exists :" + file);
 
-                        Scanner scanner = new Scanner(new FileInputStream(file));
-                        do {
-                            writer.write(scanner.nextLine());
-                        }
-                        while (scanner.hasNextLine());
-                        writer.newLine();
-                        writer.flush();
-                        scanner.close();
-
-                        System.out.println("end scanning file  :" + file.getName());
-
-                    } catch (IOException e) {
-                    }
-                });
-                thread.start();
-                thread.interrupt();
-
-            }
-
-        } catch (Exception e) {
-            throw new RuntimeException(e);
+            } catch (IOException ioException) {
+            ioException.printStackTrace();
         }
 
     }
-}
+    }
+
+
+
+
 
 
 

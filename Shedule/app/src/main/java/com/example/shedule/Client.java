@@ -16,11 +16,11 @@ public class Client {
     private static String reading;
     private static Socket clientSocket = null;
 
-    public static String ClientConnection() {
+    public static String ClientConnection( String request) {
         Thread thread = new Thread(() -> {
             try {
-                clientSocket = new Socket("176.117.134.51", 14882);
-                clientSocket.setSoTimeout(500);
+                clientSocket = new Socket("176.117.134.51", 3405);
+                clientSocket.setSoTimeout(2000);
                 try (
                         BufferedWriter writer = new BufferedWriter(
                                 new OutputStreamWriter(clientSocket.getOutputStream()));
@@ -28,8 +28,6 @@ public class Client {
                                 new InputStreamReader(clientSocket.getInputStream()))) {
                     System.out.println("Connected");
 
-
-                    String request = "C:\\Users\\макс\\Desktop\\xml\\lessons.xml";
 
                     writer.write(request);
                     writer.newLine();
