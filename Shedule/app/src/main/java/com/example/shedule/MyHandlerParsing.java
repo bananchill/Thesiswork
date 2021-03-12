@@ -38,6 +38,7 @@ public class MyHandlerParsing extends DefaultHandler {
     private boolean IsMyGroup = false;
 
     public MyHandlerParsing(String mygroup, String checkChoose) {
+        replacementData.clear();
         this.mygroup = mygroup;
         this.checkChoose = checkChoose;
     }
@@ -49,9 +50,8 @@ public class MyHandlerParsing extends DefaultHandler {
 
     @Override
     public void startElement(String uri, String localName, String qName, Attributes attributes) {
-        String element = qName;
         if (!mygroup.equals("")) {
-            if (element.equals("Group")) {
+            if (qName.equals("Group")) {
                 if (attributes.getValue(0).equals(mygroup)) {
                     nameLesson = attributes.getValue(0);
                     IsMyGroup = true;
@@ -59,7 +59,7 @@ public class MyHandlerParsing extends DefaultHandler {
                     IsMyGroup = false;
             }
             if (IsMyGroup) {
-                switch (element) {
+                switch (qName) {
                     case "Day":
                         groupDayID = attributes.getValue(0);
                     case "Lesson":
@@ -77,7 +77,7 @@ public class MyHandlerParsing extends DefaultHandler {
                 i++;
             }
         }
-        if (element.equals("Group"))
+        if (qName.equals("Group"))
             nameGroup.add(new NameGroup(attributes.getValue(0)));
 
     }
@@ -86,9 +86,7 @@ public class MyHandlerParsing extends DefaultHandler {
     public void characters(char[] ch, int start, int length) throws SAXException {
         if (IsMyGroup) {
             if (checkTeacher) {
-
                 Name += new String(ch, start, length);
-                System.out.println(Name + " Day");
             }
         }
     }
@@ -97,18 +95,21 @@ public class MyHandlerParsing extends DefaultHandler {
     @Override
     public void endElement(String uri, String localName, String qName) throws SAXException {
         if (IsMyGroup) {
-            if (!groupAuditorium.isEmpty()) {
-                checkAuditorium = groupAuditorium;
+            if (!groupAuditorium.isEmpty() ) {
+                System.out.println(groupAuditorium + "  groupAuditorium");
                 nameLesson = Name;
                 groupAuditorium = "";
                 Name = "";
             } else {
-                if (checkChoose.equals("replacement"))
+                checkAuditorium = groupAuditorium;
+                if (checkChoose.equals("replacement")) {
                     replacementData.add(new ReplacementData(groupDayID,
                             groupLessonsID, groupPodgr, nameLesson, Name, checkAuditorium));
-                else
+                    System.out.println(groupDayID);
+                } else {
                     dataGroup.add(new GroupData(groupDayID,
                             groupLessonsID, groupPodgr, nameLesson, Name, checkAuditorium));
+                }
                 checkAuditorium = "";
                 nameTeacher = "";
                 groupDayID = "";
@@ -118,7 +119,7 @@ public class MyHandlerParsing extends DefaultHandler {
                 whereAuditorium = "";
                 checkTeacher = false;
             }
-            //  System.out.println(nameLesson);
+
         }
     }
 

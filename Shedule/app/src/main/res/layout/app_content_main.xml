@@ -49,6 +49,18 @@
         android:paddingBottom="10dp"
         android:text="" />
 
+
+
+    <TextView
+        android:id="@+id/textViewNameOfWeek"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewChoosingGroupMain"
+        android:layout_alignRight="@id/wall"
+
+       />
+
+
     <Button
         android:id="@+id/buttonToday"
         android:layout_width="wrap_content"

@@ -47,7 +47,14 @@
         android:layout_centerHorizontal="true"
         android:text="" />
 
+    <TextView
+        android:id="@+id/textViewNameOfWeek"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@id/textViewDayOfWeek"
+        android:layout_alignRight="@id/wall"
 
+        />
     <TableLayout
         android:id="@+id/TableShedule"
         android:layout_width="match_parent"
